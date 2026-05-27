@@ -15,11 +15,4 @@ covering CTF challenges, TryHackMe rooms, Hack The Box machines, picoCTF problem
 
 ---
 
-## ⚠️ Disclaimer
-
-Everything was done in legal, authorized lab environments.  
-Never use these techniques on systems you don't own or have permission to test.
-
----
-
 *Always learning. Never stopping.* 🖥️
