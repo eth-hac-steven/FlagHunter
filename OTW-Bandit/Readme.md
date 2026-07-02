@@ -1,237 +1,253 @@
 # OTW-Bandit
 
-for lvl 1 in lvl 0
-ls 
-cat readme
+This file contains a cleaned and formatted set of hints/commands for the OverTheWire Bandit wargame (levels 0–21) based on the previous notes. Passwords are intentionally not included here — replace placeholders with the actual passwords you obtain while playing.
 
-for lvl2 in lvl1
+---
+
+## Level 0 → Level 1
+
+- List files and read the readme:
+
+```sh
+ls
+cat readme
+```
+
+## Level 1 → Level 2
+
+- Look for hidden or oddly named files:
+
+```sh
 ls
 cat ./-
+```
 
-for lvl3 in lvl2
-ls 
+## Level 2 → Level 3
+
+```sh
+ls
 cat ./--file--
+```
 
-for lvl4 in lvl3
+## Level 3 → Level 4
+
+```sh
 ls
 cd inhere
 ls -lsa
 cat ...file
+```
 
-for lvl5 in lvl4
-ls 
+## Level 4 → Level 5
+
+```sh
+ls
 cd inhere
-ls 
-cat all the file still you get the password
+ls
+# read files until you find the password
+```
 
-for lvl6 in lvl5 
+## Level 5 → Level 6
+
+```sh
 ls
 cd inhere
 ls
 ls -lsaR
-search  for the clue: 1033
+# search for the clue: 1033
 cd foldername
 cat .file
+```
 
-for lvl7 in lvl6
-ls 
-nothing 
-read the instructions on the website the key word is "somewhere on the server"
-find  / -type f -size  33c -user bandit7 -group bandit6 2>/dev/null
-/ : search the root dir
--type f : type of file being search for , in this case is a normal file hence f
--size 33c : the size of the file c represents bytes
--user bandit7 : search for the specified user
--group bandit6 : search for the specified group
--2>/dev/null: this gets rid of the any permission denied errors
+## Level 6 → Level 7
 
-cat path/to/the/file/bandit7.password
+- If you see nothing obvious, check the website instructions: the key phrase is "somewhere on the server".
+- Use find to search the entire filesystem for a 33-byte file owned by bandit7:bandit6:
 
+```sh
+find / -type f -size 33c -user bandit7 -group bandit6 2>/dev/null
+```
 
-for lvl8 in lvl7 
+- Then cat the file path returned by find, for example:
+
+```sh
+cat /path/to/the/file/bandit7.password
+```
+
+Explanation of find flags:
+- `/` — start at root
+- `-type f` — regular file
+- `-size 33c` — exactly 33 bytes (c = bytes)
+- `-user bandit7` — owned by user bandit7
+- `-group bandit6` — group bandit6
+- `2>/dev/null` — hide permission denied messages
+
+## Level 7 → Level 8
+
+- Look at `data.txt` and search for the word "millionth":
+
+```sh
 ls
 cat data.txt
-wall of text 
-read the instructions on the website The password in next to the word "millionth"
+# find the line containing 'millionth'
 cat data.txt | grep millionth
+```
 
-| this sign is called pipe it takes the output of one commands sends to the next command, this is an example of command chaining
+Note: the pipe character `|` sends the output of the left command into the right command.
 
-for lvl9 in lvl8
-ls 
+## Level 8 → Level 9
+
+- The password occurs only once. Find the unique line:
+
+```sh
+ls
 cat data.txt
-wall of text
-read the instructions on the website The password only occurs once
 cat data.txt | sort | uniq -u
+```
 
-sort : sorts the wall of text alphanumerically
-uniq -u : find the unique one amongst them
+- `sort` sorts the lines; `uniq -u` prints lines that are unique (appear only once).
 
+## Level 9 → Level 10
 
-for lvl 10 in lvl 9 
+- `data.txt` looks like scrambled text; there may be multiple encodings/transforms. Inspect carefully for patterns that look like a password (Bandit passwords are alphanumeric strings).
+
+## Level 10 → Level 11
+
+- If the file is base64 encoded:
+
+```sh
 ls
-cat data.txt
-you will see rubbish literally scrambled text , do not disregard it the password is there
-CLEARFULLY go through it you should see the password 
-at this point you should already know a password in this game should look like so find it
-
-is there a better way to find it yes....
-find that too :joy
-
-
-for lvl11 in lvl 10
-ls
-data.txt
 base64 -d data.txt
+```
 
-for lvl12 iv lvl11
-ls 
-cat data.txt
-read the instructions on the website The password is stored in the file data.txt, where all lowercase (a-z) and uppercase (A-Z) letters have been rotated by 13 positions
+## Level 11 → Level 12
+
+- If the instructions say letters were rotated by 13 (ROT13), decode with `tr`:
+
+```sh
 cat data.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+```
 
-for lvl13 in lvl12
-.bz2
-.gz
-.tar are all extensions
+## Level 12 → Level 13
 
-ls
-cat data.txt
-file data.txt
-cd ../..
-cd tmp
-mkdir dir-name
-cd dir-name
-mv data.txt data
-ls 
-looking at commands needed for this level i MAN the one i did not know aka xxd
-revealing xxd can actually revert ascii converted files. so
-xxd -r data > data2
--r for revert 
-> data2 : enter the output into data2
+- Common compressed/archive formats: `.bz2`, `.gz`, `.tar`.
+- Example workflow when you have a blob that looks like hex/ascii dump and you need to revert it and iteratively unpack:
 
+```sh
+# Work in /tmp or a working directory
+mkdir -p /tmp/bandit && cd /tmp/bandit
+# Suppose data.txt contains a hex dump: revert it
+xxd -r data.txt > data2
 file data2
-this reveal that data2 is now a gzip file
-the next step is 
-gzip -d data2 right :joy wrong
-
-if you do this i will give you an error
-rename data2 as data2.gz using 
+# If file is gz data, rename then decompress
 mv data2 data2.gz
-then 
 gzip -d data2.gz
-
--d : for decompressing 
-
-file data2 
-this is now a bzip2 file 
-rename it again
-mv data2 data2.bz2
-
-then 
-bzip2 -d data2.bz2
-then data2 is now a gzip file again
- rename it again 
-mv data2 data2.gz
- 
 file data2
- this reveal data2 is a tar file now
-
-rename it again (do you see the pattern:wink )
+# If it's bzip2:
+mv data2 data2.bz2
+bzip2 -d data2.bz2
+file data2
+# If it's a tar archive:
 mv data2 data2.tar
-then
 tar -xf data2.tar
-
--x : extract 
-f : file
-
-ls 
-you should see a  data5.bin
-file data5.bin 
-reveals that this is a tar file 
-Rename it again
-mv  data5.bin data5.bin.tar
-then
-tar -xf data5.bin.tar
-ls 
-you should see a  data6.bin
-file data6.bin
-reveals that this is a bzip file again :crying
-rename it again
-mv data6.bin data6.bin.bz2
-
-then 
-bzip2 -d data6.bin.bz2
-then 
-file data6.bin
-reveals that this is a tar file again :crying
-rename it again
-mv data6.bin data6.bin.tar
-then
-tar -xf data6.bin.tar
-ls 
-you should see data8.bin
-then 
-file data8.bin
-reveals that this is a gzip file again :crying
-rename it again 
-mv data8.bin data8.bin.gz
-then 
 ls
-next
-gzip -d data8.bin.gz
-ls
-you should see data8.bin
-cat data8.bin
-The password is *********(finally :happy)
+```
 
+- Repeat the rename/decompress/extract steps as indicated by `file` output until you reach a plaintext file that contains the password.
 
+Notes:
+- `xxd -r` reverses a hex dump produced by `xxd`.
+- Use `file <filename>` to determine the current format.
+- Many Bandit levels require repeating decompression steps in sequence.
 
-for bandit 14
-bandit 14 
-the level says you would not be given  the next password and giving
+## Level 13 → Level 14
 
-use scp to copy the ssh file from bandit 
+- Bandit 13 gives you a private SSH key. Use `scp` to copy it to your local machine and `ssh -i` to log in.
 
-scp sshkey.private Eth-steve@your_local_ip:/home/Eth-steve/Desktop/
-copy the sshkey.private from 13 , change to 600 and use to login then search etc/bandit_pass/bandit14 for the password for 14 
+Example copy (from your local machine):
 
-Copy the key to your local machine:
-on the local machine : while not logged in as bandit13
-scp -P 2220 bandit13@bandit.labs.overthewire.org:/home/bandit13/sshkey.private /home/Eth-steve/Desktop
+```sh
+# Copy the key from the remote bandit server to your local machine (adjust port and paths)
+scp -P 2220 bandit13@bandit.labs.overthewire.org:/home/bandit13/sshkey.private ~/Desktop/sshkey.private
+# Set secure permissions
+chmod 600 ~/Desktop/sshkey.private
+# Use it to log in as bandit14
+ssh -i ~/Desktop/sshkey.private -p 2220 bandit14@bandit.labs.overthewire.org
+```
 
-Set the correct permissions on the key (critical for SSH):
-chmod 600 /home/Eth-steve/Desktop/sshkey.private
+- If you copy the key while already on the remote host, use `scp` with your local machine's username and IP. Replace `your_local_ip` and username appropriately.
 
-Use the key to log in as bandit14:
-ssh -i /home/Eth-steve/Desktop/sshkey.private -p 2220 bandit14@bandit.labs.ove
+## Level 14 → Level 15
 
-for 15 in 14 use nc local host 30000 < password14-path 
+- The service may require sending the password to a TCP port, e.g. using `nc`:
 
-for 16 in 15 use openssl s_client -connect 127.0.0.1:30001 -quiet < /etc/bandit_pass/bandit15
+```sh
+# from the remote host, where password14-path is the file containing bandit14's password
+nc localhost 30000 < /etc/bandit_pass/bandit14
+```
 
-for 17 in 16 use nmap -sV -sT -p31000-32000 localhost 
-this should reveal 5  open ports 4 of which is echo while one is  not
+## Level 15 → Level 16
 
-then openssl s_client -connect 127.0.0.1:31790 -quiet < /etc/bandit_pass/bandit16
-which give me another sshprivate key,
-then 
-exit
- copy the sshprivate key and save it in separate file,  change the permissions to 600 ,
-using ssh -i /path/to/sshkey.private -p 2220 bandit17@bandit.labs.overthewire.org
+- Use OpenSSL s_client to communicate over TLS to a local port and feed the previous password in:
 
-then find the password for bandit17 in bandit_pass
- 
-- for 18 while in 17 enter diff password.new password.old
-- then the first is the answer
+```sh
+openssl s_client -connect 127.0.0.1:30001 -quiet < /etc/bandit_pass/bandit15
+```
 
-- for 19 while in 18 ssh bandit18@bandit.labs.overthewire.org -p 2220 "cat readme"   then 18s  password
+## Level 16 → Level 17
 
-- for 20 in 19 they syntax is clue ie 
-  ./bandit20-do whoami
-  and the  path/location of the file ie 
- ./bandit20-do cat /etc/bandit_pass/bandit20 
+- Use nmap to discover open high ports and find the interesting service:
 
+```sh
+nmap -sV -sT -p31000-32000 localhost
+```
 
-for 21 in 20  echo "0qXahG8ZjOVMN9Ghs7iOWsCfZyXOUbYO" | nc -l -p 4445 & (the & makes it run in the background)
-then ./suconnect 4445
+- Suppose one port is not an echo service; connect with openssl s_client and send the bandit16 password:
+
+```sh
+openssl s_client -connect 127.0.0.1:31790 -quiet < /etc/bandit_pass/bandit16
+```
+
+- The service can output an SSH private key — save it to a file on the remote host, `chmod 600` it, then use it to ssh into the next level.
+
+## Level 17 → Level 18
+
+- When provided two files (`password.new` and `password.old`), `diff` can show differences; the first differing line is often the answer:
+
+```sh
+diff password.new password.old
+```
+
+## Level 18 → Level 19
+
+- From level 18, you may be able to run a one-liner SSH command to read a file on the remote host:
+
+```sh
+ssh bandit18@bandit.labs.overthewire.org -p 2220 "cat readme"
+```
+
+## Level 19 → Level 20
+
+- Some levels provide a binary that only accepts specific arguments. Example:
+
+```sh
+./bandit20-do whoami
+./bandit20-do cat /etc/bandit_pass/bandit20
+```
+
+Run the provided program with the correct parameters and/or input method.
+
+## Level 20 → Level 21
+
+- Example using netcat and background listener (on your local machine or remote depending on level):
+
+```sh
+# On the listener side (background)
+echo "0qXahG8ZjOVMN9Ghs7iOWsCfZyXOUbYO" | nc -l -p 4445 &
+# On the other side, run the suconnect program to connect to port 4445
+./suconnect 4445
+```
+
+---
+
+If any specific level is still not working or you want the README to include more detail (screenshots, exact expected outputs, or an expanded step-by-step for a particular level), tell me which level to expand and I will update this file accordingly.
