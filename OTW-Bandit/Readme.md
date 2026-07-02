@@ -1,6 +1,6 @@
 # OTW-Bandit
 
-This file contains a cleaned and formatted set of hints/commands for the OverTheWire Bandit wargame (levels 0–21) based on the previous notes. Passwords are intentionally not included here — replace placeholders with the actual passwords you obtain while playing.
+This file contains a cleaned and formatted set of hints/commands for the OverTheWire Bandit wargame (levels 0–21). Passwords are intentionally not included here(Even if i did they change afte x period of time, alst change was 28/06/2026), replace placeholders with the actual passwords you obtain while playing.
 
 ---
 
@@ -250,4 +250,3 @@ echo "0qXahG8ZjOVMN9Ghs7iOWsCfZyXOUbYO" | nc -l -p 4445 &
 
 ---
 
-If any specific level is still not working or you want the README to include more detail (screenshots, exact expected outputs, or an expanded step-by-step for a particular level), tell me which level to expand and I will update this file accordingly.
