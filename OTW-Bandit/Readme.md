@@ -255,6 +255,67 @@ then check the previous terminal for the password for 21
 ---
 
 ## Level 21 → Level 22
+```
+cd  /etc/cron.d
+
+ls
+
+cat cronjob_bandit22
+```
+reading the content of the program it **reboot** bandit22 with program cronjod_bandit22.sh which is scheduled  to run everytime 
+so
+```
+cd /usr/bin
+cat cronjod_bandit22.sh
+```
+this reveals that the program changes the perms of the file to 644 then **cat** the password for bandit22 into the /tmp/filename, so 
+```
+cat tmp/filename
+```
+This should reveal the password for 22
+
+
+## Level 22 → 23
+
+```
+cd /etc/cron.d
+
+ls
+
+cat cronjob_bandit22
+```
+Reading the content of the program it **reboot** bandit22 with program cronjod_bandit22.sh which is scheduled  to run everytime so 
+```
+cd /usr/bin
+cat cronjod_bandit22.sh
+```
+which reveals
+```
+#!/bin/bash
+
+myname=$(whoami)
+mytarget=$(echo I am user $myname | md5sum | cut -d ' ' -f 1)
+
+echo "Copying passwordfile /etc/bandit_pass/$myname to /tmp/$mytarget"
+
+cat /etc/bandit_pass/$myname > /tmp/$mytarget
+```
+the program runs the command **whoami** which gives "bandit22" store it in a variable called "myname"
+the next line runs the command "echo I am user $myname | md5sum | cut -d ' ' -f 1"
+- **md5sum**: Pipes that string into the md5sum tool, which calculates the MD5 hash of the input.
+Note: Because echo adds a newline, it hashes the string fish\n, not just fish.
+- **cut -d ' ' -f 1**: Pipes the hash output (which includes the hash and the filename marker -) into cut. It uses a space ( ) as the delimiter (-d) and extracts only the first field (-f 1), effectively isolating just the hash string
+
+And saves it in a variable called "mytarget"
+the next command is just echo
+the next command cats  "bandit22" into /tmp/"mytarget"
+so 
+```
+cat tmp/$mytarget
+```
+This should reveal the password for 23
+
+for 23 in 24
 
 
 
