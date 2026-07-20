@@ -1,6 +1,6 @@
 # OTW-Bandit
 
-This file contains a cleaned and formatted set of hints/commands for the OverTheWire Bandit wargame (levels 0–21). Passwords are intentionally not included here(Even if i did they change afte x period of time, alst change was 28/06/2026), replace placeholders with the actual passwords you obtain while playing.
+This file contains hints/commands for the OverTheWire Bandit wargame (levels 0–21). Passwords are intentionally not included here(Even if i did they change after x period of time, last change was 28/06/2026).
 
 ---
 
@@ -167,15 +167,13 @@ Notes:
 Example copy (from your local machine):
 
 ```sh
-# Copy the key from the remote bandit server to your local machine (adjust port and paths)
+# DO NOT ATTEMPT TO CONNECT YET, fro the terminal, Copy the key from the remote bandit server to your local machine (adjust port and paths) using this command
 scp -P 2220 bandit13@bandit.labs.overthewire.org:/home/bandit13/sshkey.private ~/Desktop/sshkey.private
 # Set secure permissions
 chmod 600 ~/Desktop/sshkey.private
 # Use it to log in as bandit14
 ssh -i ~/Desktop/sshkey.private -p 2220 bandit14@bandit.labs.overthewire.org
 ```
-
-- If you copy the key while already on the remote host, use `scp` with your local machine's username and IP. Replace `your_local_ip` and username appropriately.
 
 ## Level 14 → Level 15
 
@@ -208,7 +206,11 @@ nmap -sV -sT -p31000-32000 localhost
 openssl s_client -connect 127.0.0.1:31790 -quiet < /etc/bandit_pass/bandit16
 ```
 
-- The service can output an SSH private key — save it to a file on the remote host, `chmod 600` it, then use it to ssh into the next level.
+- This command output an SSH private key, save it to a file, `chmod 600` the file, then use it to ssh into the next level.
+- with this command
+  ```
+  ssh -i ~/Desktop/sshkey.private -p 2220 bandit17@bandit.labs.overthewire.org
+  ```
 
 ## Level 17 → Level 18
 
@@ -222,9 +224,10 @@ diff password.new password.old
 
 - From level 18, you may be able to run a one-liner SSH command to read a file on the remote host:
 
-```sh
+```
 ssh bandit18@bandit.labs.overthewire.org -p 2220 "cat readme"
 ```
+Then enter the password for 18 to get 19
 
 ## Level 19 → Level 20
 
@@ -241,12 +244,18 @@ Run the provided program with the correct parameters and/or input method.
 
 - Example using netcat and background listener (on your local machine or remote depending on level):
 
-```sh
-# On the listener side (background)
-echo "0qXahG8ZjOVMN9Ghs7iOWsCfZyXOUbYO" | nc -l -p 4445 &
-# On the other side, run the suconnect program to connect to port 4445
+```
+# In one terminal run 
+echo "passowrd-fo-20" | nc -l -p 4445 &
+# In another terminal, run the suconnect program to connect to port 4445
 ./suconnect 4445
 ```
+then check the previous terminal for the password for 21
 
 ---
+
+## Level 21 → Level 22
+
+
+
 
