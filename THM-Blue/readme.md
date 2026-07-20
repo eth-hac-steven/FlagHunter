@@ -219,13 +219,15 @@ Answer the questions below
 
 Answer : **flag{access_the_machine}**
 
-### Question 9 Flag2? This flag can be found at the location where passwords are stored within Windows.*Errata: Windows really doesn't like the location of this flag and can occasionally delete it. It may be necessary in some cases to terminate/restart the machine and rerun the exploit to find this flag. This relatively rare, however, it can happen. 
+### Question 9 Flag2? 
+This flag can be found at the location where passwords are stored within Windows.*Errata: Windows really doesn't like the location of this flag and can occasionally delete it. It may be necessary in some cases to terminate/restart the machine and rerun the exploit to find this flag. This relatively rare, however, it can happen. 
 
 **path C:\Windows\System32\config\flag2.txt**
 
 **Answer : flag{sam_database_elevated_access}**
 
-### Question 10 flag3? This flag can be found in an excellent location to loot. After all, Administrators usually have pretty interesting things saved
+### Question 10 flag3? 
+This flag can be found in an excellent location to loot. After all, Administrators usually have pretty interesting things saved
 
 **path C:\Users\Jon\Documents\flag3.txt**
 
