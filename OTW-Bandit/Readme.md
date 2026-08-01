@@ -1,6 +1,6 @@
 # OTW-Bandit
 
-This file contains hints/commands for the OverTheWire Bandit wargame (levels 0–21). Passwords are intentionally not included here(Even if i did they change after x period of time, last change was 28/06/2026).
+This file contains hints/commands for the OverTheWire Bandit wargame (levels 0–23). Passwords are intentionally not included here(Even if i did they change after x period of time, last change was 28/06/2026).
 
 ---
 
@@ -46,6 +46,11 @@ cd inhere
 ls
 # read files until you find the password
 ```
+or 
+```
+cat ./*
+```
+That will let you read all the files at once
 
 ## Level 5 → Level 6
 
@@ -130,29 +135,157 @@ cat data.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m'
 
 ## Level 12 → Level 13
 
-- Common compressed/archive formats: `.bz2`, `.gz`, `.tar`.
-- Example workflow when you have a blob that looks like hex/ascii dump and you need to revert it and iteratively unpack:
-
-```sh
-# Work in /tmp or a working directory
-mkdir -p /tmp/bandit && cd /tmp/bandit
-# Suppose data.txt contains a hex dump: revert it
-xxd -r data.txt > data2
-file data2
-# If file is gz data, rename then decompress
-mv data2 data2.gz
-gzip -d data2.gz
-file data2
-# If it's bzip2:
-mv data2 data2.bz2
-bzip2 -d data2.bz2
-file data2
-# If it's a tar archive:
-mv data2 data2.tar
-tar -xf data2.tar
+.bz2,.gz,.tar are all compression command extensions
+```
 ls
+
+cat data.txt
+```
+reveals a wall of number of wall and text
+```
+file data.txt
+```
+reveals this to be ASCII which is somewhat human-readable
+```
+cd ../../tmp
+
+mkdir dir-name ; cd dir-name
+```
+**mkdir dir-name ; cd dir-name**
+this is command chaining 
+we are still the it dir-name folder
+```
+mv /home/bandit12/data.txt /tmp/dir-name
+
+ls 
+
+```
+looking at commands needed for this level i MAN the one i did not know which is  **xxd**
+```
+man xxd
+```
+revealing **xxd** can actually revert Hexademical converted files. so
+```
+xxd -r data.txt > data2
+```
+-r for revert 
+**> data2**: enter the output into data2
+```
+file data2
+```
+this reveal that data2 is now a gzip file
+the next step is 
+```
+gzip -d data2
+```
+right 😂 wrong if you do this i will give you an error
+rename data2 as data2.gz using 
+```
+mv data2 data2.gz
+```
+then 
+```
+gzip -d data2.gz
+```
+-d : for decompressing 
+```
+file data2 
+```
+data2 is now a bzip2 file rename it again
+```
+mv data2 data2.bz2
+```
+then 
+```
+bzip2 -d data2.bz2
+```
+then data2 is now a gzip file again &#x20;rename it again 
+```
+mv data2 data2.gz
+```
+&#x20;
+```
+file data2
+```
+&#x20;this reveal data2 is a tar file now, rename it again (do you see the pattern 😉 )
+```
+mv data2 data2.tar
+```
+then
+```
+tar -xf data2.tar
 ```
 
+- **-x** : extract
+  
+- **f** : file
+```
+ls 
+```
+you should see a  data5.bin
+```
+file data5.bin 
+```
+reveals that this is a tar file, Rename it again
+```
+mv  data5.bin data5.bin.tar
+```
+then
+```
+tar -xf data5.bin.tar
+ls 
+```
+you should see a  data6.bin file
+```
+file data6.bin
+```
+reveals that this is a bzip file again 😢 rename it again
+```
+mv data6.bin data6.bin.bz2
+```
+then 
+```
+bzip2 -d data6.bin.bz2
+```
+then 
+```
+file data6.bin
+```
+reveals that this is a tar file again 😢, rename it again
+```
+mv data6.bin data6.bin.tar
+```
+then
+```
+tar -xf data6.bin.tar
+
+ls 
+```
+you should see data8.bin, then 
+```
+file data8.bin
+```
+reveals that this is a gzip file again 😢, rename it again 
+```
+mv data8.bin data8.bin.gz
+```
+then 
+```
+ls
+```
+next
+```
+gzip -d data8.bin.gz
+
+ls
+```
+you should see data8.bin
+
+cat data8.bin
+
+The password is \*\*\*\*\*\*\*\*\*(finally 😃)
+
+- Common compressed/archive formats: `.bz2`, `.gz`, `.tar`.
 - Repeat the rename/decompress/extract steps as indicated by `file` output until you reach a plaintext file that contains the password.
 
 Notes:
@@ -163,23 +296,39 @@ Notes:
 ## Level 13 → Level 14
 
 - Bandit 13 gives you a private SSH key. Use `scp` to copy it to your local machine and `ssh -i` to log in.
+```
+ls
+```
+this reveals to file 
+```
+HINT sshkey.private
+```
+right, **cat**-ing the sshkey.private, you should see an ssh private key 
 
-Example copy (from your local machine):
+An **SSH private key** is a secret cryptographic file that acts as the unique "key" to unlock access for a user or process, allowing them to prove their identity to a server via challenge-response authentication without ever sharing the file itself
 
-```sh
-# DO NOT ATTEMPT TO CONNECT YET, fro the terminal, Copy the key from the remote bandit server to your local machine (adjust port and paths) using this command
-scp -P 2220 bandit13@bandit.labs.overthewire.org:/home/bandit13/sshkey.private ~/Desktop/sshkey.private
+so highlight everything start from  "-- to the last --", then copy it
+exit from bandit13 
+on your local Machine 
+```
+nano sshkey.private
+```
+paste the key you copied in it then save the file, 
 # Set secure permissions
+```
 chmod 600 ~/Desktop/sshkey.private
+```
 # Use it to log in as bandit14
+```
 ssh -i ~/Desktop/sshkey.private -p 2220 bandit14@bandit.labs.overthewire.org
 ```
+pay attention to the location of the sshkey.private file 
 
 ## Level 14 → Level 15
 
 - The service may require sending the password to a TCP port, e.g. using `nc`:
 
-```sh
+```
 # from the remote host, where password14-path is the file containing bandit14's password
 nc localhost 30000 < /etc/bandit_pass/bandit14
 ```
@@ -315,7 +464,90 @@ cat tmp/$mytarget
 ```
 This should reveal the password for 23
 
-for 23 in 24
+## Level 22 → 23
+```
+ls 
+
+cd into /etc/cron.d
+
+ls
+
+cat cronjob_bandit24
+```
+
+reading the content of the cronjob  it **reboot** bandit24 with program cronjob_bandit24.sh which is scheduled  to run every time so
+```
+cd /usr/bin
+
+cat cronjob_bandit24.sh
+```
+run cat cronjob_bandit24.sh reveals the content of the script
+```
+#!/bin/bash
+
+shopt -s nullglob
+
+myname=$(whoami)
+
+cd /var/spool/"$myname"/foo || exit
+echo "Executing and deleting all scripts in /var/spool/$myname/foo:"
+for i in * .*;
+do
+    if [ "$i" != "." ] && [ "$i" != ".." ];
+    then
+        echo "Handling $i"
+        owner="$(stat --format "%U" "./$i")"
+        if [ "${owner}" = "bandit23" ] && [ -f "$i" ]; then
+            timeout -s 9 60 "./$i"
+        fi
+        rm -rf "./$i"
+    fi
+done
+```
+the script above 
+ask who the user is with **whoami**
+then checks /var/spool/myname/foo 
+then echo 
+then deletes all the file owned by myname in that folder
+
+which means this particular folder  can execute any and every script in that folder 
+
+so lets create a very simple script
+to do that  we will 
+```
+mdkir /tmp/tunde ; cd tunde
+```
+then the  script 
+```
+nano  get-bandit24-passwd.sh 
+```
+paste this in the file 
+```
+#!/bin/bash 
+cat /etc/bandit_pass/bandit14 > /tmp/tunde/the_password.txt
+```
+this script will run as bandit24 thanks to the folder will put it in, so it will be able to read the  bandit24 passwd file
+after saving the script  
+then 
+```
+chmod +x  get-bandit24-passwd.sh 
+```
+this make the script an executable
+then 
+```
+cp get-bandit24-passwd.sh /var/spool/bandit24/foo
+```
+wait for a minute to go by before typing 
+```
+ls
+``` 
+then you should see the_password.txt file in  /tmp/tunde dir
+the **cat** it 
+you should get your answer for level 24.
+
+## Level 23 → 24
+After reading the instruction from the site i pick the scent that this level would require a script that will first run  all the possible combination from 0000-10000 
+then send the pin+bandit24_passwd to the listener on port 30002
 
 
 
