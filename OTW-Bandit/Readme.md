@@ -1,6 +1,6 @@
 # OTW-Bandit
 
-This file contains hints/commands for the OverTheWire Bandit wargame (levels 0–23). Passwords are intentionally not included here(Even if i did they change after x period of time, last change was 28/06/2026).
+This file contains hints/commands for the OverTheWire Bandit wargame (levels 0–23). Passwords are intentionally not included here(Even if i did they change after x period of time, last change was 24/06/2026).
 
 ---
 
@@ -464,7 +464,7 @@ cat tmp/$mytarget
 ```
 This should reveal the password for 23
 
-## Level 22 → 23
+## Level 23 → 24
 ```
 ls 
 
@@ -545,10 +545,45 @@ then you should see the_password.txt file in  /tmp/tunde dir
 the **cat** it 
 you should get your answer for level 24.
 
-## Level 23 → 24
+## Level 24 → 25
 After reading the instruction from the site i pick the scent that this level would require a script that will first run  all the possible combination from 0000-10000 
-then send the pin+bandit24_passwd to the listener on port 30002
+then send the bandit24_passwd+pin to the listener on port 30002
+so 
+```
+ls
 
+mkdir /tmp/bandit25 ; cd /tmp/banit25
+
+nano b25passwd_getter.sh
+```
+paste this in 
+```
+PASS="bandit24"
+for i in $(seq -w 0 9999); do
+        echo "$PASS $i"
+done | nc -q 1 localhost 30002
+```
+- **PASS** is a variable to store the bandit24 passwd
+- **seq -w 0 9999** ensures you are sending 0000 through 9999 exactly as the server expects, without having to manually format the string inside the loop. It's the cleanest way to generate fixed-width numbers in Bash.
+```
+seq 0 9999
+```
+would Output: 0, 1, 2, ... 9, 10, ... 9999, This would send PASS 0 instead of PASS 0000. The server would likely reject it because it expects a 4-digit string.
+- **echo "$PASS $i"** echo those to server
+- **nc -q 1 localhost 30002** this send the echo response to the server
+-Next 
+```
+chmod -X b25passwd_getter.sh
+```
+makes the b25passwd_getter.sh an executable file
+- Next
+```
+./b25passwd_getter.sh > the_password.txt
+```
+sends the output of the script into **the_password.txt** file
+doing that should reveal the password for bandit25.
+
+  
 
 
 
