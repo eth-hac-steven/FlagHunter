@@ -1,6 +1,6 @@
 # OpenVPN Config for THM rooms on kali VM
 
-Step 1 be done on both kali or host/normal system.
+Step 1 can be done on both kali or host/normal system.
 
 **DO IT ON KALI**
 
@@ -26,7 +26,7 @@ Step 1 be done on both kali or host/normal system.
 
 ![step-4](/OpenVPN%20Config%20for%20THM%20rooms%20on%20kali%20VM/image/THM-vpn-conn-4.png)  
 
-#### IF  YOU DID THIS ON YOUR HOST SYSTEM FIND COPY IT TO KALi USING THE **VIRTUAL BOX DRAG AND DROP FEATURE** if that fails repeat **Step 1**  in the kail VM
+#### IF  YOU DID THIS ON YOUR HOST SYSTEM FIND COPY IT TO KALI USING THE **VIRTUAL BOX DRAG AND DROP FEATURE** if that fails repeat **Step 1**  in the kail VM
 ## Step 2
 **Now in Kali Linux**
 
@@ -39,20 +39,21 @@ Step 1 be done on both kali or host/normal system.
  sudo apt update 
 ```
 ```
- sudo apt install OpenVPN
+ sudo apt install openvpn
 ```
 ```
 sudo OpenVPN <the-config-file you just downloaded>
 ```
 
-wait for it to  finish running 
-pay attention to the last few line when it is done running  look for "initialization sequence complete"
-
-then run 
+wait for it to  finish running, pay attention to the last few line when it is done running  look for "initialization sequence complete"
+- Open a new terminal, then run 
 
 ```
 ip a
 ```
 
-- look for the interface **tun** that is the vpn ip your kali has been given
-- To confirm return back to the manage account page and click on the refresh button next to openvpn 
+![step-5](/OpenVPN%20Config%20for%20THM%20rooms%20on%20kali%20VM/image/THM-vpn-conn-5.png)
+
+- look for the interface **tun0** that is the vpn ip your kali has been given
+- To confirm return back to the manage account page and click on the refresh button next to openvpn
+- then Try ping the IP on the target lab.
