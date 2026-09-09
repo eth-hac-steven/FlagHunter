@@ -5,6 +5,7 @@
 ![blue](images/1-2026-04-17231145.png) 
 
 </center>
+
 ### Question 1 : Scan the machine
 
 **No Answer Needed**
